@@ -11,7 +11,9 @@ public class GameStateManager {
     public GameStateManager(){
         gameStates = new ArrayList<GameState>();
 
-        currentState = 0;   
+        currentState = 0; 
+        
+        // TODO: add some game states
     }
 
     public void setState(int state){
