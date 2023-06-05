@@ -12,6 +12,8 @@ public class GameStateManager {
         gameStates = new ArrayList<GameState>();
 
         currentState = 0; 
+
+        
         
         // TODO: add some game states
     }
