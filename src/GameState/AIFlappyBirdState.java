@@ -1,8 +1,15 @@
 package GameState;
 
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+
+import Entities.Bird;
+import Entities.Pipe;
 
 public class AIFlappyBirdState extends GameState {
+
+    private ArrayList<Bird> birds;
+    private ArrayList<Pipe> pipes;
 
     public void init() {
     }
