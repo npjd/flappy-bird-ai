@@ -1,5 +1,3 @@
-package Entities;
-
-public class Background {
+public class Background{
     
 }

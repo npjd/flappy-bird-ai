@@ -1,5 +1,78 @@
 package Entities;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+
+import Game.GamePanel;
+
+import java.awt.Rectangle;
+
 public class Pipe {
-    
+    private int x, y;
+    private int width, height;
+    private int gap;
+    private int speed;
+    private BufferedImage topImage, bottomImage, pipeExtension;
+    private Rectangle topBounds, bottomBounds;
+
+    public Pipe(int x, int y, int width, int height, int gap, int speed) throws IOException {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.gap = gap;
+        this.speed = speed;
+        this.topImage = ImageIO.read(new File("./assets/bottom_pipe.png"));
+        this.bottomImage = ImageIO.read(new File("./assets/top_pipe.png"));
+        this.pipeExtension = ImageIO.read(new File("./assets/pipe_extension.png"));
+        this.topBounds = new Rectangle(x, -1000, width, y+height+1000);
+        this.bottomBounds = new Rectangle(x, y + height + gap, width, GamePanel.HEIGHT - (y + gap));
+    }
+
+    public void update() {
+        x -= speed;
+        topBounds.setLocation(x, -1000);
+        bottomBounds.setLocation(x, y + height + gap);
+    }
+
+    public void draw(Graphics g) {
+        g.setColor(Color.RED);
+        g.drawRect(topBounds.x, topBounds.y, topBounds.width, topBounds.height);
+        g.setColor(Color.BLUE);
+        g.drawRect(bottomBounds.x, bottomBounds.y, bottomBounds.width, bottomBounds.height);
+
+        if (y > 0) {
+            g.drawImage(pipeExtension, x, 0, width, y, null);
+            g.drawImage(topImage, x, y, width, height, null);
+        } else {
+            g.drawImage(topImage, x, y, width, height, null);
+        }
+        if (y + gap + 2 * height < GamePanel.HEIGHT) {
+            g.drawImage(bottomImage, x, y + height + gap, width, height, null);
+            g.drawImage(pipeExtension, x, y + gap + height * 2, width, GamePanel.HEIGHT - (y + gap + height), null);
+        } else {
+            g.drawImage(bottomImage, x, y + height + gap, width, height, null);
+        }
+
+    }
+
+    public boolean isOffscreen() {
+        return x + width < 0;
+    }
+
+    public static Pipe generatePipe(int startX, int width, int height, int gap, int speed)
+            throws IOException {
+        int x = startX;
+        int y = 50 + (int) (Math.random() * (GamePanel.HEIGHT - 100 - height - gap));
+        return new Pipe(x, y, width, height, gap, speed);
+    }
+
+    public boolean collidesWith(Rectangle rect) {
+        return topBounds.intersects(rect) || bottomBounds.intersects(rect);
+    }
+
 }
