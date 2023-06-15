@@ -81,4 +81,16 @@ public class Pipe {
         return topBounds.intersects(rect) || bottomBounds.intersects(rect);
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getTopHeight() {
+        return y+height;
+    }
+
+    public int getBottomHeight() {
+        return y+height+gap;
+    }
+
 }

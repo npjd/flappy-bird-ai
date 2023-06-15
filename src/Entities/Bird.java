@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import Math.Matrix;
 import Math.NeuralNetwork;
 
 public class Bird {
@@ -33,6 +34,12 @@ public class Bird {
         this.bounds = new Rectangle(x, y, width, height);
 
         this.isThinkingBird = isThinkingBird;
+
+        if (isThinkingBird) {
+            brain = new NeuralNetwork(5, 5, 2);
+        } else {
+            brain = null;
+        }
     }
 
     public void draw(Graphics2D g) {
@@ -52,6 +59,32 @@ public class Bird {
         velocity = -10;
     }
 
+    public void think(int distanceFromGroup, int distanceFromClosestPipe, int topHeight, int bottomHeight) {
+        if (!this.isThinkingBird) {
+            throw new RuntimeException("This bird is not a thinking bird");
+        }
+
+        double[] inputs = new double[5];
+        inputs[0] = distanceFromGroup;
+        inputs[1] = distanceFromClosestPipe;
+        inputs[2] = topHeight;
+        inputs[3] = bottomHeight;
+        inputs[4] = this.y;
+
+        double[][] inputArray = { inputs };
+
+        Matrix inputMatrix = Matrix.fromArray(inputArray);
+        try {
+            Matrix outputs = brain.feedForward(inputMatrix);
+            if (outputs.matrix[0][0] > outputs.matrix[1][0]) {
+                this.jump();
+            }
+        } catch (Exception e) {
+            return;
+        }
+
+    }
+
     public boolean collidesWith(Rectangle rect) {
         return bounds.intersects(rect);
     }
@@ -59,4 +92,13 @@ public class Bird {
     public Rectangle getBounds() {
         return bounds;
     }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getX() {
+        return x;
+    }
+    
 }

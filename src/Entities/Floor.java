@@ -60,4 +60,9 @@ public class Floor {
     public boolean collidesWith(Rectangle rect){
         return rect.intersects(new Rectangle(x1, GamePanel.HEIGHT - image.getHeight(), GamePanel.WIDTH, GamePanel.HEIGHT));
     }
+
+    public int getHeight() {
+        return this.image.getHeight();
+    }
+    
 }

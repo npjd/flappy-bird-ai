@@ -13,6 +13,8 @@ public class GameStateManager {
 
         currentState = 0;
 
+        gameStates.add(new TrainingState(this));
+
         gameStates.add(new PlayingState(this));
 
     }
