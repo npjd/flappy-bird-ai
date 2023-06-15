@@ -7,12 +7,13 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import Entities.Background;
 import Entities.Bird;
 import Entities.Pipe;
 import Game.GamePanel;
 
 public class PlayingState extends GameState {
-    private BufferedImage background;
+    private Background background;
     private Bird bird;
     private ArrayList<Pipe> pipes;
     private int score;
@@ -24,13 +25,12 @@ public class PlayingState extends GameState {
 
     public void init() {
         try {
-            // background =
-            // ImageIO.read(getClass().getResourceAsStream("/assets/Background.png"));
+            background = new Background(4);
 
             bird = new Bird(50, 200, 52, 24);
 
             pipes = new ArrayList<>();
-            pipes.add(Pipe.generatePipe(GamePanel.WIDTH, 50, 200, 150, 5));
+            pipes.add(Pipe.generatePipe(GamePanel.WIDTH, 50, 200, 150, 4));
 
             score = 0;
         } catch (IOException e) {
@@ -40,6 +40,7 @@ public class PlayingState extends GameState {
 
     public void update() {
         bird.update();
+        background.update();
 
         for (Pipe pipe : pipes) {
             pipe.update();
@@ -59,10 +60,9 @@ public class PlayingState extends GameState {
     }
 
     public void draw(Graphics2D g) {
-        // g.drawImage(background, 0, 0, null);
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
-
+        background.draw(g);
         bird.draw(g);
         for (Pipe pipe : pipes) {
             pipe.draw(g);

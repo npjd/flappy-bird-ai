@@ -2,6 +2,7 @@ package Entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import javax.imageio.ImageIO;
 import Game.GamePanel;
 
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 
 public class Pipe {
     private int x, y;
@@ -29,7 +31,7 @@ public class Pipe {
         this.topImage = ImageIO.read(new File("./assets/bottom_pipe.png"));
         this.bottomImage = ImageIO.read(new File("./assets/top_pipe.png"));
         this.pipeExtension = ImageIO.read(new File("./assets/pipe_extension.png"));
-        this.topBounds = new Rectangle(x, -1000, width, y+height+1000);
+        this.topBounds = new Rectangle(x, -1000, width, y + height + 1000);
         this.bottomBounds = new Rectangle(x, y + height + gap, width, GamePanel.HEIGHT - (y + gap));
     }
 
@@ -53,7 +55,11 @@ public class Pipe {
         }
         if (y + gap + 2 * height < GamePanel.HEIGHT) {
             g.drawImage(bottomImage, x, y + height + gap, width, height, null);
-            g.drawImage(pipeExtension, x, y + gap + height * 2, width, GamePanel.HEIGHT - (y + gap + height), null);
+            AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
+            tx.translate(-pipeExtension.getWidth(null), 0);
+            AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+            g.drawImage(op.filter(pipeExtension, null), x , y + gap + height * 2, width,
+                    GamePanel.HEIGHT - (y + gap + height), null);
         } else {
             g.drawImage(bottomImage, x, y + height + gap, width, height, null);
         }
