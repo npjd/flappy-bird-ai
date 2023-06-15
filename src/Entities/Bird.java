@@ -8,6 +8,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import Math.NeuralNetwork;
+
 public class Bird {
     private int x, y;
     private int width, height;
@@ -16,7 +18,11 @@ public class Bird {
     private BufferedImage image;
     private Rectangle bounds;
 
-    public Bird(int x, int y, int width, int height) throws IOException {
+    private NeuralNetwork brain;
+
+    private boolean isThinkingBird;
+
+    public Bird(int x, int y, int width, int height, boolean isThinkingBird) throws IOException {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -25,6 +31,8 @@ public class Bird {
         this.velocity = 0;
         this.rotation = 0;
         this.bounds = new Rectangle(x, y, width, height);
+
+        this.isThinkingBird = isThinkingBird;
     }
 
     public void draw(Graphics2D g) {
