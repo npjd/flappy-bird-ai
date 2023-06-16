@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 import Game.GamePanel;
 
 public class Background {
-    int x1, x2;
+    int x1, x2, x3;
     int speed;
     int width;
     BufferedImage image;
@@ -27,23 +27,31 @@ public class Background {
 
         this.width = this.image.getWidth();
 
-        this.x2 = this.width - 1;
+        this.x2 = this.width;
+        this.x3 = this.width * 2;
     }
 
     public void draw(Graphics2D g) {
         g.drawImage(image, x1, 0, GamePanel.WIDTH, GamePanel.HEIGHT, null);
         g.drawImage(image, x2, 0, GamePanel.WIDTH, GamePanel.HEIGHT, null);
+        g.drawImage(image, x3, 0, GamePanel.WIDTH, GamePanel.HEIGHT, null);
     }
 
     public void update() {
         this.x1 -= this.speed;
         this.x2 -= this.speed;
-        if (this.x1 + this.width < 0) {
-            this.x1 = this.x2 + this.width - 1;
+        this.x3 -= this.speed;
+
+        if (this.x1 <= -this.width) {
+            this.x1 = this.x3 + this.width;
         }
-        if (this.x2 + this.width < 0) {
-            this.x2 = this.x1 + this.width - 1;
+
+        if (this.x2 <= -this.width) {
+            this.x2 = this.x1 + this.width;
+        }
+
+        if (this.x3 <= -this.width) {
+            this.x3 = this.x2 + this.width;
         }
     }
-
 }

@@ -39,7 +39,7 @@ public class TrainingState extends GameState {
 
         for (int i = 0; i < numBirds; i++) {
             try {
-                birds.add(new Bird(GamePanel.WIDTH/2, 50 + random.nextInt(350), 52, 24, true));
+                birds.add(new Bird(GamePanel.WIDTH / 2, 50 + random.nextInt(350), 52, 24, true));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -65,13 +65,16 @@ public class TrainingState extends GameState {
 
     public void update() {
 
-        if (pipes.isEmpty()) {
-            return;
-        }
+        floor.update();
+        background.update();
 
-        Iterator<Bird> birdIterator = birds.iterator();
-        while (birdIterator.hasNext()) {
-            Bird bird = birdIterator.next();
+        if (birds.isEmpty()) {
+            newGeneration();;
+        }
+    
+        for (int i = 0; i < birds.size(); i++) {
+            Bird bird = birds.get(i);
+
             bird.update();
             bird.think(
                     pipes,
@@ -82,35 +85,37 @@ public class TrainingState extends GameState {
                 Pipe pipe = pipeIterator.next();
                 if (pipe.collidesWith(bird.getBounds()) || floor.collidesWith(bird.getBounds())) {
                     savedBirds.add(bird);
-                    birdIterator.remove();
+                    birds.remove(bird);
                     break;
                 }
             }
 
         }
 
-        floor.update();
-        background.update();
+        for (int i = 0; i < pipes.size(); i++) {
+            Pipe pipe = pipes.get(i);
 
-        Iterator<Pipe> pipeIterator = pipes.iterator();
-        while (pipeIterator.hasNext()) {
-            Pipe pipe = pipeIterator.next();
             pipe.update();
-            if (pipe.isOffscreen()) {
-                pipeIterator.remove();
-                try {
-                    pipes.add(Pipe.generatePipe(GamePanel.WIDTH, 50, 200, 150, pipeSpeed));
-                } catch (IOException e) {
-                    e.printStackTrace();
+            if (!birds.isEmpty()) {
+                if (pipe.getX() < birds.get(0).x && !pipe.isPassed()) {
+                    try {
+                        pipe.setPassed(true);
+                        pipes.add(Pipe.generatePipe(GamePanel.WIDTH + 50, 50, 200, 150, pipeSpeed));
+                        score++;
+                        for (int j = 0; j < birds.size(); j++) {
+                            birds.get(j).score += 100;
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-                score++;
+            }
+
+            if (pipe.isOffscreen()) {
+                pipes.remove(pipe);
             }
         }
 
-        if (birds.isEmpty()) {
-            newGeneration();
-
-        }
     }
 
     public void newGeneration() {
@@ -174,7 +179,7 @@ public class TrainingState extends GameState {
                 return bird;
             }
         }
-        return birds.get( (int) (Math.random() * savedBirds.size()));
+        return birds.get((int) (Math.random() * savedBirds.size()));
 
     }
 

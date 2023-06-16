@@ -77,8 +77,8 @@ public class GamePanel extends JPanel
 			start = System.nanoTime();
 			
 			// call gsm methods
-			update();
 			draw();
+			update();
 			// draw image to JPanel
 			drawToScreen();
 			

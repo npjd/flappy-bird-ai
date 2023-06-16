@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 import Game.GamePanel;
 
 public class Floor {
-    int x1, x2,x3;
+    int x1, x2, x3;
     int speed;
     int width;
     BufferedImage image;
@@ -29,15 +29,14 @@ public class Floor {
 
         this.width = this.image.getWidth();
 
-        this.x2 = this.width - 10;
-
-        this.x3 = this.x2 - 10;
+        this.x2 = this.width;
+        this.x3 = this.width * 2;
 
         this.bounds = new Rectangle(GamePanel.WIDTH, GamePanel.HEIGHT - image.getHeight(), GamePanel.WIDTH, GamePanel.HEIGHT);
     }
 
     public void draw(Graphics2D g) {
-        g.drawImage(image, x1, GamePanel.HEIGHT - image.getHeight() , null);
+        g.drawImage(image, x1, GamePanel.HEIGHT - image.getHeight(), null);
         g.drawImage(image, x2, GamePanel.HEIGHT - image.getHeight(), null);
         g.drawImage(image, x3, GamePanel.HEIGHT - image.getHeight(), null);
     }
@@ -46,14 +45,17 @@ public class Floor {
         this.x1 -= this.speed;
         this.x2 -= this.speed;
         this.x3 -= this.speed;
-        if (this.x1 + this.width < 0) {
-            this.x1 = this.x3 + this.width - 10;
+
+        if (this.x1 <= -this.width) {
+            this.x1 = this.x3 + this.width;
         }
-        if (this.x2 + this.width < 0) {
-            this.x2 = this.x2 + this.width - 10;
+
+        if (this.x2 <= -this.width) {
+            this.x2 = this.x1 + this.width;
         }
-        if (this.x3 + this.width < 0) {
-            this.x3 = this.x1 + this.width - 10;
+
+        if (this.x3 <= -this.width) {
+            this.x3 = this.x2 + this.width;
         }
     }
 
@@ -64,5 +66,4 @@ public class Floor {
     public int getHeight() {
         return this.image.getHeight();
     }
-    
 }

@@ -89,15 +89,15 @@ public class Bird implements Comparable<Bird> {
 
         double[][] inputs = new double[4][1];
 
-        // inputs[0][0] = closestPipe.getX() - this.x + this.image.getWidth();
-        // inputs[1][0] = closestPipe.getTopHeight();
-        // inputs[2][0] = closestPipe.getBottomHeight();
-        // inputs[3][0] = distanceFromGround;
+        inputs[0][0] = closestPipe.getX() - this.x + this.image.getWidth();
+        inputs[1][0] = closestPipe.getTopHeight();
+        inputs[2][0] = closestPipe.getBottomHeight();
+        inputs[3][0] = distanceFromGround;
 
-        inputs[0][0] = Math.random();
-        inputs[1][0] = Math.random();
-        inputs[2][0] = Math.random();
-        inputs[3][0] = Math.random();
+        // inputs[0][0] = Math.random();
+        // inputs[1][0] = Math.random();
+        // inputs[2][0] = Math.random();
+        // inputs[3][0] = Math.random();
         
 
         Matrix inputMatrix = Matrix.fromArray(inputs);
@@ -106,7 +106,6 @@ public class Bird implements Comparable<Bird> {
 
         try {
             Matrix outputs = brain.feedForward(inputMatrix);
-            System.out.println(outputs.matrix[0][0] + " " + outputs.matrix[1][0]);
             if (outputs.matrix[0][0] < outputs.matrix[1][0]) {
                 this.jump();
             }
