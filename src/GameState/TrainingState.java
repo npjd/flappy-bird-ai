@@ -20,10 +20,11 @@ public class TrainingState extends GameState {
 
     private ArrayList<Bird> birds;
     private ArrayList<Bird> savedBirds;
-    private int numBirds = 10;
+    private int numBirds = 250;
     private Bird bestBird;
 
     private ArrayList<Pipe> pipes;
+    private int pipeSpeed = 4;
 
     private int score;
     private double mutationRate = 0.5;
@@ -38,7 +39,7 @@ public class TrainingState extends GameState {
 
         for (int i = 0; i < numBirds; i++) {
             try {
-                birds.add(new Bird(50, 50 + random.nextInt(350), 52, 24, true));
+                birds.add(new Bird(GamePanel.WIDTH/2, 50 + random.nextInt(350), 52, 24, true));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -54,8 +55,7 @@ public class TrainingState extends GameState {
             floor = new Floor(4);
 
             pipes = new ArrayList<>();
-            pipes.add(Pipe.generatePipe(GamePanel.WIDTH, 50, 200, 150, 4));
-            pipes.add(Pipe.generatePipe(GamePanel.WIDTH + 200, 50, 200, 150, 4));
+            pipes.add(Pipe.generatePipe(GamePanel.WIDTH, 50, 200, 150, pipeSpeed));
 
             score = 0;
         } catch (IOException e) {
@@ -64,13 +64,18 @@ public class TrainingState extends GameState {
     }
 
     public void update() {
+
+        if (pipes.isEmpty()) {
+            return;
+        }
+
         Iterator<Bird> birdIterator = birds.iterator();
         while (birdIterator.hasNext()) {
             Bird bird = birdIterator.next();
             bird.update();
             bird.think(
                     pipes,
-                    bird.y - GamePanel.HEIGHT - floor.getHeight());
+                    (GamePanel.HEIGHT - floor.getHeight()) - bird.y);
 
             Iterator<Pipe> pipeIterator = pipes.iterator();
             while (pipeIterator.hasNext()) {
@@ -94,8 +99,7 @@ public class TrainingState extends GameState {
             if (pipe.isOffscreen()) {
                 pipeIterator.remove();
                 try {
-                    pipes.add(Pipe.generatePipe(GamePanel.WIDTH, 50, 200, 150, 4));
-                    pipes.add(Pipe.generatePipe(GamePanel.WIDTH + 200, 50, 200, 150, 4));
+                    pipes.add(Pipe.generatePipe(GamePanel.WIDTH, 50, 200, 150, pipeSpeed));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -122,7 +126,7 @@ public class TrainingState extends GameState {
         birds.add(bestBird);
         birds.add(generationBestBird);
 
-        for (int i = 0; i < (numBirds - 2) / 2; i++) {
+        for (int i = 0; i < numBirds - 2; i++) {
             Bird parentA = selectBird();
             Bird parentB = selectBird();
             Bird child;
@@ -170,7 +174,8 @@ public class TrainingState extends GameState {
                 return bird;
             }
         }
-        return null;
+        return birds.get( (int) (Math.random() * savedBirds.size()));
+
     }
 
     public void draw(Graphics2D g) {

@@ -16,7 +16,10 @@ public class PlayingState extends GameState {
     private Background background;
     private Floor floor;
     private Bird bird;
+
     private ArrayList<Pipe> pipes;
+    private int pipeSpeed=4;
+
     private int score;
 
     public PlayingState(GameStateManager gsm) {
@@ -28,10 +31,10 @@ public class PlayingState extends GameState {
         try {
             background = new Background(4);
             floor = new Floor(4);
-            bird = new Bird(50, 200, 52, 24, false);
+            bird = new Bird(GamePanel.WIDTH / 2, 200, 52, 24, false);
 
             pipes = new ArrayList<>();
-            pipes.add(Pipe.generatePipe(GamePanel.WIDTH, 50, 200, 150, 4));
+            pipes.add(Pipe.generatePipe(GamePanel.WIDTH + 50, 50, 200, 150, pipeSpeed));
 
             score = 0;
         } catch (IOException e) {
@@ -44,16 +47,24 @@ public class PlayingState extends GameState {
         floor.update();
         background.update();
 
-        for (Pipe pipe : pipes) {
+        for (int i = 0; i < pipes.size(); i++) {
+
+            Pipe pipe = pipes.get(i);
+
             pipe.update();
-            if (pipe.isOffscreen()) {
-                pipes.remove(pipe);
+
+            if (pipe.getX() < bird.x && !pipe.isPassed()) {
                 try {
-                    pipes.add(Pipe.generatePipe(GamePanel.WIDTH, 50, 200, 150, 5));
+                    pipe.setPassed(true);
+                    pipes.add(Pipe.generatePipe(GamePanel.WIDTH + 50, 50, 200, 150, pipeSpeed));
+                    score++;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                score++;
+            }
+
+            if (pipe.isOffscreen()) {
+                pipes.remove(pipe);
             }
             if (pipe.collidesWith(bird.getBounds()) || floor.collidesWith(bird.getBounds())) {
                 init();

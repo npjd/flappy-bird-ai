@@ -1,6 +1,5 @@
 package Entities;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -20,6 +19,7 @@ public class Pipe {
     private int speed;
     private BufferedImage topImage, bottomImage, pipeExtension;
     private Rectangle topBounds, bottomBounds;
+    private boolean isPassed;
 
     public Pipe(int x, int y, int width, int height, int gap, int speed) throws IOException {
         this.x = x;
@@ -33,6 +33,7 @@ public class Pipe {
         this.pipeExtension = ImageIO.read(new File("./assets/pipe_extension.png"));
         this.topBounds = new Rectangle(x, -1000, width, y + height + 1000);
         this.bottomBounds = new Rectangle(x, y + height + gap, width, GamePanel.HEIGHT - (y + gap));
+        this.isPassed = false;
     }
 
     public void update() {
@@ -42,10 +43,6 @@ public class Pipe {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.RED);
-        g.drawRect(topBounds.x, topBounds.y, topBounds.width, topBounds.height);
-        g.setColor(Color.BLUE);
-        g.drawRect(bottomBounds.x, bottomBounds.y, bottomBounds.width, bottomBounds.height);
 
         if (y > 0) {
             g.drawImage(pipeExtension, x, 0, width, y, null);
@@ -93,4 +90,11 @@ public class Pipe {
         return y+height+gap;
     }
 
+    public boolean isPassed() {
+        return isPassed;
+    }
+
+    public void setPassed(boolean isPassed) {
+        this.isPassed = isPassed;
+    }
 }

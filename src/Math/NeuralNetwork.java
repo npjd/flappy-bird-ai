@@ -40,15 +40,15 @@ public class NeuralNetwork {
             throw new Exception("Input matrix dimensions must match input layer dimensions");
         }
 
-        this.hiddenLayer = Matrix.matrixMultiplication(this.weightsIH, this.inputLayer);
-        this.hiddenLayer.add(this.biasH);
-        this.hiddenLayer.sigmoid();
+        Matrix hiddenMatrix = Matrix.matrixMultiplication(this.weightsIH, input);
+        hiddenMatrix.add(this.biasH);
+        hiddenMatrix.sigmoid();
 
-        this.outputLayer = Matrix.matrixMultiplication(this.weightsHO, this.hiddenLayer);
-        this.outputLayer.add(this.biasO);
-        this.outputLayer.sigmoid();
+        Matrix outpuMatrix = Matrix.matrixMultiplication(this.weightsHO, hiddenMatrix);
+        outpuMatrix.add(this.biasO);
+        outpuMatrix.sigmoid();
 
-        return this.outputLayer;
+        return outpuMatrix;
     }
 
     public void mutate(double mutationRate) {
