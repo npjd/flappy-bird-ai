@@ -13,21 +13,19 @@ public class Matrix {
     public void randomize() {
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.columns; j++)
-                this.matrix[i][j] = Math.random();
+                this.matrix[i][j] = Math.random() *2 -1;
         }
     }
 
-    public void multiply(double n) {
-        for (int i = 0; i < this.rows; i++) {
-            for (int j = 0; j < this.columns; j++)
-                this.matrix[i][j] *= n;
-        }
-    }
 
-    public void add(double n) {
-        for (int i = 0; i < this.rows; i++) {
-            for (int j = 0; j < this.columns; j++)
-                this.matrix[i][j] += n;
+    public void add(Matrix m){
+        if (this.rows == m.rows && this.columns == m.columns) {
+            for (int i = 0; i < this.rows; i++) {
+                for (int j = 0; j < this.columns; j++)
+                    this.matrix[i][j] += m.matrix[i][j];
+            }
+        } else {
+            System.out.println("Matrix dimensions must match");
         }
     }
 
@@ -55,15 +53,12 @@ public class Matrix {
     }
 
     public static Matrix fromArray(double[][] arr) {
-        int rows = arr[0].length;
-        System.out.println(rows);
-        int columns = arr.length;
-        System.out.println(columns);
+        int rows = arr.length;
+        int columns = arr[0].length;
+
         Matrix m = new Matrix(rows, columns);
-        for (int i = 0; i < columns; i++) {
-            System.out.println(i);
-            for (int j = 0; j < rows; j++) {
-                System.out.println(j);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
                 m.matrix[i][j] = arr[i][j];
             }
         }

@@ -5,21 +5,25 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
 import Math.Matrix;
 import Math.NeuralNetwork;
 
-public class Bird {
-    private int x, y;
+public class Bird implements Comparable<Bird> {
+    public int x, y;
     private int width, height;
     private int velocity;
     private double rotation;
     private BufferedImage image;
     private Rectangle bounds;
 
-    private NeuralNetwork brain;
+    public double score;
+    public double fitness;
+
+    public NeuralNetwork brain;
 
     private boolean isThinkingBird;
 
@@ -32,11 +36,12 @@ public class Bird {
         this.velocity = 0;
         this.rotation = 0;
         this.bounds = new Rectangle(x, y, width, height);
+        this.score = 0;
 
         this.isThinkingBird = isThinkingBird;
 
         if (isThinkingBird) {
-            brain = new NeuralNetwork(5, 5, 2);
+            brain = new NeuralNetwork(4, 4, 2);
         } else {
             brain = null;
         }
@@ -49,6 +54,7 @@ public class Bird {
     }
 
     public void update() {
+        score += 1;
         y += velocity;
         velocity += 1;
         bounds.setLocation(x, y);
@@ -59,27 +65,42 @@ public class Bird {
         velocity = -10;
     }
 
-    public void think(int distanceFromGroup, int distanceFromClosestPipe, int topHeight, int bottomHeight) {
+    public void think(ArrayList<Pipe> pipes,
+            int distanceFromGround) {
         if (!this.isThinkingBird) {
             throw new RuntimeException("This bird is not a thinking bird");
         }
 
-        double[] inputs = new double[5];
-        inputs[0] = distanceFromGroup;
-        inputs[1] = distanceFromClosestPipe;
-        inputs[2] = topHeight;
-        inputs[3] = bottomHeight;
-        inputs[4] = this.y;
+        Pipe closestPipe = null;
+        double diff;
+        double record = Double.POSITIVE_INFINITY;
+        for (int i = 0; i < pipes.size(); i++) {
+            diff = pipes.get(i).getX() - this.x;
+            if (diff > 0 && diff < record) {
+                record = diff;
+                closestPipe = pipes.get(i);
+            }
+        }
 
-        double[][] inputArray = { inputs };
+        if (closestPipe == null) {
+            System.out.println("closest pipe is null");
+            return;
+        }
 
-        Matrix inputMatrix = Matrix.fromArray(inputArray);
+        double[][] inputs = new double[4][1];
 
+        inputs[0][0] = closestPipe.getX() - this.x + this.image.getWidth();
+        inputs[1][0] = closestPipe.getTopHeight();
+        inputs[2][0] = closestPipe.getBottomHeight();
+        inputs[3][0] = distanceFromGround;
+
+        Matrix inputMatrix = Matrix.fromArray(inputs);
+
+        inputMatrix.sigmoid();
 
         try {
             Matrix outputs = brain.feedForward(inputMatrix);
-            System.out.println(outputs.matrix[0][0] + " " + outputs.matrix[1][0]);
-            if (outputs.matrix[0][0] > outputs.matrix[1][0]) {
+            if (outputs.matrix[0][0] < outputs.matrix[1][0]) {
                 this.jump();
             }
         } catch (Exception e) {
@@ -98,12 +119,20 @@ public class Bird {
         return bounds;
     }
 
-    public int getY() {
-        return y;
+    public int compareTo(Bird otherBird) {
+        if (this.fitness > otherBird.fitness) {
+            return -1;
+        } else if (this.fitness < otherBird.fitness) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
-    public int getX() {
-        return x;
+    public static Bird breed(Bird bird1, Bird bird2) throws IOException {
+        Bird child = new Bird(50, 200, 52, 24, true);
+        child.brain = NeuralNetwork.crossOver(bird1.brain, bird2.brain);
+        return child;
     }
-    
+
 }
