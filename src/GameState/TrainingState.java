@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import Entities.Background;
 import Entities.Bird;
@@ -16,7 +17,7 @@ public class TrainingState extends GameState {
     private Floor floor;
     private ArrayList<Bird> birds;
     private ArrayList<Bird> savedBirds;
-    private int numBirds;
+    private int numBirds = 100;
     private ArrayList<Pipe> pipes;
     private int score;
 
@@ -31,6 +32,7 @@ public class TrainingState extends GameState {
             floor = new Floor(4);
 
             birds = new ArrayList<>();
+            savedBirds = new ArrayList<>();
 
             for (int i = 0; i < numBirds; i++) {
                 birds.add(new Bird(50, 200, 52, 24, true));
@@ -46,21 +48,34 @@ public class TrainingState extends GameState {
     }
 
     public void update() {
-        for (Bird bird : birds) {
+        Iterator<Bird> birdIterator = birds.iterator();
+        while (birdIterator.hasNext()) {
+            Bird bird = birdIterator.next();
             bird.update();
             bird.think(
                     pipes.get(0).getX() - bird.getX(),
                     pipes.get(0).getTopHeight(),
                     pipes.get(0).getBottomHeight(),
                     bird.getY() - GamePanel.HEIGHT - floor.getHeight());
+
+            for (Pipe pipe : pipes) {
+                if (pipe.collidesWith(bird.getBounds()) || floor.collidesWith(bird.getBounds())) {
+                    savedBirds.add(bird);
+                    birdIterator.remove();
+                    break;
+                }
+            }
         }
+
         floor.update();
         background.update();
 
-        for (Pipe pipe : pipes) {
+        Iterator<Pipe> pipeIterator = pipes.iterator();
+        while (pipeIterator.hasNext()) {
+            Pipe pipe = pipeIterator.next();
             pipe.update();
             if (pipe.isOffscreen()) {
-                pipes.remove(pipe);
+                pipeIterator.remove();
                 try {
                     pipes.add(Pipe.generatePipe(GamePanel.WIDTH, 50, 200, 150, 5));
                 } catch (IOException e) {
@@ -68,13 +83,10 @@ public class TrainingState extends GameState {
                 }
                 score++;
             }
-            for (Bird bird : birds) {
-                if (pipe.collidesWith(bird.getBounds()) || floor.collidesWith(bird.getBounds())) {
-                    savedBirds.add(bird);
-                    birds.remove(bird);
-                }
-            }
+        }
 
+        if (birds.isEmpty()) {
+            init();
         }
     }
 

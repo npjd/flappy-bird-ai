@@ -23,6 +23,8 @@ public class NeuralNetwork {
 
     public Matrix feedForward(Matrix input) throws Exception {
         if (input.rows != this.inputLayer.rows || input.columns != this.inputLayer.columns) {
+            System.out.println("INPUT ROWS: " + input.rows + " INPUT COLUMNS: " + input.columns);
+            System.out.println("INPUT LAYER ROWS: " + this.inputLayer.rows + " INPUT LAYER COLUMNS: " + this.inputLayer.columns);
             throw new Exception("Input matrix dimensions must match input layer dimensions");
         }
 

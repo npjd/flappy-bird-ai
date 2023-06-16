@@ -1,8 +1,7 @@
 package Math;
 
 public class Matrix {
-    int rows;
-    int columns;
+    int rows, columns;
     public double[][] matrix;
 
     public Matrix(int rows, int columns) {
@@ -56,17 +55,20 @@ public class Matrix {
     }
 
     public static Matrix fromArray(double[][] arr) {
-        int rows = arr.length;
-        int columns = arr[0].length;
+        int rows = arr[0].length;
+        System.out.println(rows);
+        int columns = arr.length;
+        System.out.println(columns);
         Matrix m = new Matrix(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
+        for (int i = 0; i < columns; i++) {
+            System.out.println(i);
+            for (int j = 0; j < rows; j++) {
+                System.out.println(j);
                 m.matrix[i][j] = arr[i][j];
             }
         }
         return m;
     }
-
 
     public static Matrix matrixMultiplication(Matrix m1, Matrix m2) throws Exception {
         if (m1.columns == m2.rows) {

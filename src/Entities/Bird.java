@@ -74,12 +74,17 @@ public class Bird {
         double[][] inputArray = { inputs };
 
         Matrix inputMatrix = Matrix.fromArray(inputArray);
+
+
         try {
             Matrix outputs = brain.feedForward(inputMatrix);
+            System.out.println(outputs.matrix[0][0] + " " + outputs.matrix[1][0]);
             if (outputs.matrix[0][0] > outputs.matrix[1][0]) {
                 this.jump();
             }
         } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error feeding forward");
             return;
         }
 
