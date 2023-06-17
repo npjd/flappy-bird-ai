@@ -10,6 +10,7 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+
 import Game.GamePanel;
 import Math.Matrix;
 import Math.NeuralNetwork;
@@ -85,10 +86,10 @@ public class Bird implements Comparable<Bird> {
 
         double[][] inputs = new double[5][1];
 
-        inputs[0][0] = (closestPipe.getX() - this.x + this.image.getWidth());
-        inputs[1][0] = (closestPipe.getTopHeight());
-        inputs[2][0] = (closestPipe.getBottomHeight());
-        inputs[3][0] = this.y;
+        inputs[0][0] = (closestPipe.getX() - this.x + this.image.getWidth()) / ((double) GamePanel.WIDTH);
+        inputs[1][0] = (closestPipe.getTopHeight()) / ((double) GamePanel.HEIGHT);
+        inputs[2][0] = (closestPipe.getBottomHeight()) / ((double) GamePanel.HEIGHT);
+        inputs[3][0] = this.y / ((double) GamePanel.HEIGHT);
         inputs[4][0] = this.velocity / 10.0;
 
         Matrix inputMatrix = Matrix.fromArray(inputs);

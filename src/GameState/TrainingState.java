@@ -2,15 +2,12 @@ package GameState;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-import javax.swing.JLabel;
-import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import Entities.Background;
 import Entities.Bird;
@@ -35,35 +32,10 @@ public class TrainingState extends GameState {
     private int generationCount = 1;
 
     private GamePanel gamePanel;
-    private JSlider fpsSlider;
-    private JLabel fpsLabel;
-
     public TrainingState(GameStateManager gsm) {
 
         this.gsm = gsm;
         this.gamePanel = gsm.getGamePanel();
-
-        fpsSlider = new JSlider(60, 300, 60);
-        fpsSlider.setMajorTickSpacing(60);
-        fpsSlider.setMinorTickSpacing(10);
-        fpsSlider.setPaintTicks(true);
-        fpsSlider.setPaintLabels(true);
-        fpsSlider.setBounds(10, GamePanel.HEIGHT - 60, 200, 50);
-
-        fpsSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int fps = fpsSlider.getValue();
-                gamePanel.setFPS(fps);
-            }
-        });
-
-        fpsLabel = new JLabel("FPS: " + fpsSlider.getValue());
-        fpsLabel.setForeground(Color.WHITE);
-        fpsLabel.setBounds(10, GamePanel.HEIGHT - 90, 100, 20);
-
-
-        gamePanel.add(fpsSlider);
 
         birds = new ArrayList<>();
         savedBirds = new ArrayList<>();
@@ -80,6 +52,7 @@ public class TrainingState extends GameState {
         }
 
         bestBird = birds.get(0);
+
         init();
     }
 
@@ -158,6 +131,20 @@ public class TrainingState extends GameState {
 
     }
 
+    public void increaseFps() {
+        int currentFps = gamePanel.getFPS();
+        if (currentFps < 400) {
+            gamePanel.setFPS(currentFps + 10);
+        }
+    }
+
+    public void decreaseFps() {
+        int currentFps = gamePanel.getFPS();
+        if (currentFps > 60) {
+            gamePanel.setFPS(currentFps - 10);
+        }
+    }
+
     public void newGeneration() {
 
         normalizeFitness();
@@ -210,7 +197,7 @@ public class TrainingState extends GameState {
             index++;
         }
         index--;
-        return savedBirds.get(index).copyAndMutate(0.3);
+        return savedBirds.get(index).copyAndMutate(0.4);
     }
 
     public void draw(Graphics2D g) {
@@ -227,12 +214,19 @@ public class TrainingState extends GameState {
         g.drawString("Score: " + score, 10, 20);
         g.drawString("Generation: " + generationCount, 10, 40);
 
-        fpsLabel.paint(g);
-        fpsSlider.paint(g);
+        g.drawString("Speed (FPS): " + gamePanel.getFPS(), 10, GamePanel.HEIGHT - 40);
+        g.drawString("Press up arrow to increase speed, down arrow to decrease", 10, GamePanel.HEIGHT - 30);
+
     }
 
     @Override
     public void keyPressed(int k) {
+        if (k == KeyEvent.VK_UP) {
+            increaseFps();
+        }
+        if (k == KeyEvent.VK_DOWN) {
+            decreaseFps();
+        }
         return;
     }
 

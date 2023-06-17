@@ -124,6 +124,10 @@ public class GamePanel extends JPanel
 		FPS = fps;
 		targetTime = 1000 / FPS;
 	}
+
+	public int getFPS() {
+		return FPS;
+	}
 	
 	// implements key press methods
 	// all key events get passed to the game state manager in order to see how the current game state handles key events
