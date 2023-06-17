@@ -31,7 +31,7 @@ public class Pipe {
         this.topImage = ImageIO.read(new File("./assets/bottom_pipe.png"));
         this.bottomImage = ImageIO.read(new File("./assets/top_pipe.png"));
         this.pipeExtension = ImageIO.read(new File("./assets/pipe_extension.png"));
-        this.topBounds = new Rectangle(x, 0, width, y + height);
+        this.topBounds = new Rectangle(x, -1000, width, y + height + 1000);
         this.bottomBounds = new Rectangle(x, y + height + gap, width, GamePanel.HEIGHT - (y + gap));
         this.isPassed = false;
     }
@@ -55,7 +55,7 @@ public class Pipe {
             AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
             tx.translate(-pipeExtension.getWidth(null), 0);
             AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-            g.drawImage(op.filter(pipeExtension, null), x , y + gap + height * 2, width,
+            g.drawImage(op.filter(pipeExtension, null), x, y + gap + height * 2, width,
                     GamePanel.HEIGHT - (y + gap + height), null);
         } else {
             g.drawImage(bottomImage, x, y + height + gap, width, height, null);
@@ -70,7 +70,7 @@ public class Pipe {
     public static Pipe generatePipe(int startX, int width, int height, int gap, int speed)
             throws IOException {
         int x = startX;
-        int y = 50 + (int) (Math.random() * (GamePanel.HEIGHT - 100 - height - gap));
+        int y = (int) (Math.random() * (GamePanel.HEIGHT - 100 - height - gap));
         return new Pipe(x, y, width, height, gap, speed);
     }
 
@@ -83,11 +83,11 @@ public class Pipe {
     }
 
     public int getTopHeight() {
-        return y+height;
+        return y + height;
     }
 
     public int getBottomHeight() {
-        return y+height+gap;
+        return y + height + gap;
     }
 
     public boolean isPassed() {

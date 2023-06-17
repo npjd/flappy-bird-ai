@@ -81,16 +81,13 @@ public class Matrix {
         }
     }
 
-    public String toString() {
-        String s = "";
+    public Matrix copy() {
+        Matrix m = new Matrix(this.rows, this.columns);
         for (int i = 0; i < this.rows; i++) {
-            s += "[";
-            for (int j = 0; j < this.columns; j++) {
-                s += this.matrix[i][j] + ", ";
-            }
-            s += "]\n";
+            for (int j = 0; j < this.columns; j++)
+                m.matrix[i][j] = this.matrix[i][j];
         }
-        return s;
+        return m;
     }
 
 }

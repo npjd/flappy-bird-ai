@@ -66,7 +66,7 @@ public class PlayingState extends GameState {
             if (pipe.isOffscreen()) {
                 pipes.remove(pipe);
             }
-            if (pipe.collidesWith(bird.getBounds()) || floor.collidesWith(bird.getBounds())) {
+            if (pipe.collidesWith(bird.getBounds()) || floor.collidesWith(bird.getBounds()) || bird.y < 0) {
                 init();
             }
         }

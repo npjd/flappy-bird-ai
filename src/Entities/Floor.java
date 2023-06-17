@@ -32,7 +32,8 @@ public class Floor {
         this.x2 = this.width;
         this.x3 = this.width * 2;
 
-        this.bounds = new Rectangle(GamePanel.WIDTH, GamePanel.HEIGHT - image.getHeight(), GamePanel.WIDTH, GamePanel.HEIGHT);
+        this.bounds = new Rectangle(GamePanel.WIDTH, GamePanel.HEIGHT - image.getHeight(), GamePanel.WIDTH,
+                GamePanel.HEIGHT);
     }
 
     public void draw(Graphics2D g) {
@@ -59,11 +60,22 @@ public class Floor {
         }
     }
 
-    public boolean collidesWith(Rectangle rect){
-        return rect.intersects(new Rectangle(x1, GamePanel.HEIGHT - image.getHeight(), GamePanel.WIDTH, GamePanel.HEIGHT));
+    public boolean collidesWith(Rectangle rect) {
+        return rect
+                .intersects(new Rectangle(x1, GamePanel.HEIGHT - image.getHeight(), GamePanel.WIDTH, GamePanel.HEIGHT));
     }
 
     public int getHeight() {
         return this.image.getHeight();
+    }
+
+    public static int getFloorHeight() {
+        try {
+            return ImageIO.read(new File("./assets/floor.png")).getHeight();
+        } catch (IOException e) {
+            System.out.println("Error loading floor image");
+        }
+
+        return 0;
     }
 }

@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -66,8 +67,7 @@ public class Bird implements Comparable<Bird> {
         velocity = -10;
     }
 
-    public void think(ArrayList<Pipe> pipes,
-            int distanceFromGround) {
+    public void think(ArrayList<Pipe> pipes) {
         if (!this.isThinkingBird) {
             throw new RuntimeException("This bird is not a thinking bird");
         }
@@ -85,19 +85,16 @@ public class Bird implements Comparable<Bird> {
 
         double[][] inputs = new double[5][1];
 
-        inputs[0][0] = (closestPipe.getX() - this.x + this.image.getWidth()) / ((double) GamePanel.WIDTH);
-        inputs[1][0] = (closestPipe.getTopHeight()) / ((double) GamePanel.HEIGHT);
-        inputs[2][0] = (closestPipe.getBottomHeight()) / ((double) GamePanel.HEIGHT);
-        inputs[3][0] = this.y / ((double) GamePanel.HEIGHT);
+        inputs[0][0] = (closestPipe.getX() - this.x + this.image.getWidth());
+        inputs[1][0] = (closestPipe.getTopHeight());
+        inputs[2][0] = (closestPipe.getBottomHeight());
+        inputs[3][0] = this.y;
         inputs[4][0] = this.velocity / 10.0;
+        // inputs[5][0] = GamePanel.HEIGHT - Floor.getFloorHeight() - this.y;
 
         Matrix inputMatrix = Matrix.fromArray(inputs);
 
-        System.out.println("input " + inputMatrix);
-
         inputMatrix.sigmoid();
-
-        System.out.println("sigmoid input " + inputMatrix);
 
         try {
             Matrix outputs = brain.feedForward(inputMatrix);
@@ -120,21 +117,27 @@ public class Bird implements Comparable<Bird> {
         return bounds;
     }
 
-
-    public int compareTo(Bird otherBird) {
-        if (this.fitness > otherBird.fitness) {
+    public int compareTo(Bird other) {
+        if (this.fitness > other.fitness) {
             return -1;
-        } else if (this.fitness < otherBird.fitness) {
+        } else if (this.fitness < other.fitness) {
             return 1;
         } else {
             return 0;
         }
     }
 
-    public static Bird breed(Bird bird1, Bird bird2) throws IOException {
-        Bird child = new Bird(GamePanel.WIDTH / 2, 200, 52, 24, true);
-        child.brain = NeuralNetwork.crossOver(bird1.brain, bird2.brain);
-        return child;
+    public Bird copyAndMutate(double mutationRate) {
+        try {
+            Random random = new Random();
+            Bird copy = new Bird(GamePanel.WIDTH / 2, 50 + random.nextInt(350), width, height, this.isThinkingBird);
+            copy.brain = this.brain.copyAndMutate(mutationRate);
+            return copy;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error copying and mutating");
+            return null;
+        }
     }
 
 }

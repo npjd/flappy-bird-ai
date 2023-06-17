@@ -27,7 +27,6 @@ public class TrainingState extends GameState {
     private int pipeSpeed = 4;
 
     private int score;
-    private double mutationRate = 0.5;
     private int generationCount = 1;
 
     public TrainingState(GameStateManager gsm) {
@@ -73,16 +72,19 @@ public class TrainingState extends GameState {
             Bird bird = birds.get(i);
 
             bird.update();
-            bird.think(
-                    pipes,
-                    (GamePanel.HEIGHT - floor.getHeight()) - bird.y);
+            bird.think(pipes);
 
-            for (int j = 0; j < pipes.size(); j++) {
-                Pipe pipe = pipes.get(j);
-                if (pipe.collidesWith(bird.getBounds()) || floor.collidesWith(bird.getBounds())) {
-                    savedBirds.add(bird);
-                    deadBirds.add(bird);
-                    break;
+            if (bird.y < 0 || bird.y > GamePanel.HEIGHT - floor.getHeight()) {
+                savedBirds.add(bird);
+                deadBirds.add(bird);
+            } else {
+                for (int j = 0; j < pipes.size(); j++) {
+                    Pipe pipe = pipes.get(j);
+                    if (pipe.collidesWith(bird.getBounds())) {
+                        savedBirds.add(bird);
+                        deadBirds.add(bird);
+                        break;
+                    }
                 }
             }
 
@@ -92,40 +94,31 @@ public class TrainingState extends GameState {
             Pipe pipe = pipes.get(i);
 
             pipe.update();
-            if (!birds.isEmpty()) {
-                if (pipe.getX() < birds.get(0).x && !pipe.isPassed()) {
-                    try {
-                        pipe.setPassed(true);
-                        pipes.add(Pipe.generatePipe(GamePanel.WIDTH + 50, 50, 200, 150, pipeSpeed));
-                        score++;
-                        for (int j = 0; j < birds.size(); j++) {
-                            if (birds.get(j).y < -birds.get(j).getBounds().height
-                                    || birds.get(j).y > GamePanel.HEIGHT - floor.getHeight()) {
-                                savedBirds.add(birds.get(j));
-                                deadBirds.add(birds.get(j));
-                            } else {
-                                birds.get(j).score += 100;
-                            }
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+
+            if (pipe.getX() < birds.get(0).x && !pipe.isPassed()) {
+                try {
+                    pipe.setPassed(true);
+                    pipes.add(Pipe.generatePipe(GamePanel.WIDTH + 50, 50, 200, 150, pipeSpeed));
+                    score++;
+                    for (int j = 0; j < birds.size(); j++) {
+                        birds.get(j).score += 100;
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
 
             if (pipe.isOffscreen()) {
                 pipes.remove(pipe);
             }
+        }
 
-            if (!deadBirds.isEmpty()) {
-                for (Bird bird : deadBirds) {
-                    birds.remove(bird);
-                }
-                if (birds.isEmpty()) {
-                    newGeneration();
-                }
-            }
+        for (Bird bird : deadBirds) {
+            birds.remove(bird);
+        }
 
+        if (birds.isEmpty()) {
+            newGeneration();
         }
 
     }
@@ -140,22 +133,13 @@ public class TrainingState extends GameState {
 
         Bird generationBestBird = savedBirds.get(savedBirds.size() - 1);
 
-        birds.add(bestBird);
-        birds.add(generationBestBird);
+        birds.add(bestBird.copyAndMutate(0.1));
+        birds.add(generationBestBird.copyAndMutate(0.1));
 
-        for (int i = 0; i < numBirds - 2; i++) {
-            Bird parentA = selectBird();
-            Bird parentB = selectBird();
-            Bird child;
-            try {
-                child = Bird.breed(parentA, parentB);
-                child.brain.mutate(mutationRate);
-                child.y = 50 + new Random().nextInt(350);
-                birds.add(child);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        System.out.println(savedBirds.size());
 
+        for (int i = 0; i < savedBirds.size() - 2; i++) {
+            birds.add(selectBird());
         }
 
         if (generationBestBird.score > bestBird.score) {
@@ -184,16 +168,14 @@ public class TrainingState extends GameState {
     }
 
     public Bird selectBird() {
+        int index = 0;
         double rand = Math.random();
-        double sum = 0;
-        for (Bird bird : savedBirds) {
-            sum += bird.fitness;
-            if (sum > rand) {
-                return bird;
-            }
+        while (rand > 0) {
+            rand  -= savedBirds.get(index).fitness;
+            index++;
         }
-        return savedBirds.get(new Random().nextInt(savedBirds.size()));
-
+        index --;
+        return savedBirds.get(index).copyAndMutate(0.3);
     }
 
     public void draw(Graphics2D g) {
