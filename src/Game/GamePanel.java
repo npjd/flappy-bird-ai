@@ -19,7 +19,7 @@ public class GamePanel extends JPanel
 	// variables for game thread
 	private Thread thread;
 	private boolean running;
-	private int FPS = 200;
+	private int FPS = 60;
 	private long targetTime = 1000 / FPS;
 	
 	// variables for drawing
@@ -59,7 +59,7 @@ public class GamePanel extends JPanel
 		
 		running = true;
 		// create game state manager
-		gsm = new GameStateManager();
+		gsm = new GameStateManager(this);
 		
 	}
 	// run function for game panel
@@ -118,6 +118,11 @@ public class GamePanel extends JPanel
 				WIDTH * SCALE, HEIGHT * SCALE,
 				null);
 		g2.dispose();
+	}
+
+	public void setFPS(int fps) {
+		FPS = fps;
+		targetTime = 1000 / FPS;
 	}
 	
 	// implements key press methods

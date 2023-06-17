@@ -90,7 +90,6 @@ public class Bird implements Comparable<Bird> {
         inputs[2][0] = (closestPipe.getBottomHeight());
         inputs[3][0] = this.y;
         inputs[4][0] = this.velocity / 10.0;
-        // inputs[5][0] = GamePanel.HEIGHT - Floor.getFloorHeight() - this.y;
 
         Matrix inputMatrix = Matrix.fromArray(inputs);
 

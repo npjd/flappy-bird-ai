@@ -1,15 +1,21 @@
 package GameState;
 
 import java.util.ArrayList;
+
+import Game.GamePanel;
+
 import java.awt.Graphics2D;
 
 public class GameStateManager {
 
     private ArrayList<GameState> gameStates;
     private int currentState;
+    private GamePanel gamePanel;
 
-    public GameStateManager() {
+    public GameStateManager(GamePanel gamePanel) {
         gameStates = new ArrayList<GameState>();
+
+        this.gamePanel = gamePanel;
 
         currentState = 0;
 
@@ -17,6 +23,10 @@ public class GameStateManager {
 
         gameStates.add(new PlayingState(this));
 
+    }
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
     }
 
     public void setState(int state) {
