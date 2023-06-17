@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Random;
 
 import Entities.Background;
@@ -20,7 +19,8 @@ public class TrainingState extends GameState {
 
     private ArrayList<Bird> birds;
     private ArrayList<Bird> savedBirds;
-    private int numBirds = 250;
+    private ArrayList<Bird> deadBirds;
+    private int numBirds = 100;
     private Bird bestBird;
 
     private ArrayList<Pipe> pipes;
@@ -34,6 +34,7 @@ public class TrainingState extends GameState {
         this.gsm = gsm;
         birds = new ArrayList<>();
         savedBirds = new ArrayList<>();
+        deadBirds = new ArrayList<>();
 
         Random random = new Random();
 
@@ -68,10 +69,6 @@ public class TrainingState extends GameState {
         floor.update();
         background.update();
 
-        if (birds.isEmpty()) {
-            newGeneration();;
-        }
-    
         for (int i = 0; i < birds.size(); i++) {
             Bird bird = birds.get(i);
 
@@ -80,12 +77,11 @@ public class TrainingState extends GameState {
                     pipes,
                     (GamePanel.HEIGHT - floor.getHeight()) - bird.y);
 
-            Iterator<Pipe> pipeIterator = pipes.iterator();
-            while (pipeIterator.hasNext()) {
-                Pipe pipe = pipeIterator.next();
+            for (int j = 0; j < pipes.size(); j++) {
+                Pipe pipe = pipes.get(j);
                 if (pipe.collidesWith(bird.getBounds()) || floor.collidesWith(bird.getBounds())) {
                     savedBirds.add(bird);
-                    birds.remove(bird);
+                    deadBirds.add(bird);
                     break;
                 }
             }
@@ -103,7 +99,13 @@ public class TrainingState extends GameState {
                         pipes.add(Pipe.generatePipe(GamePanel.WIDTH + 50, 50, 200, 150, pipeSpeed));
                         score++;
                         for (int j = 0; j < birds.size(); j++) {
-                            birds.get(j).score += 100;
+                            if (birds.get(j).y < -birds.get(j).getBounds().height
+                                    || birds.get(j).y > GamePanel.HEIGHT - floor.getHeight()) {
+                                savedBirds.add(birds.get(j));
+                                deadBirds.add(birds.get(j));
+                            } else {
+                                birds.get(j).score += 100;
+                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -114,6 +116,16 @@ public class TrainingState extends GameState {
             if (pipe.isOffscreen()) {
                 pipes.remove(pipe);
             }
+
+            if (!deadBirds.isEmpty()) {
+                for (Bird bird : deadBirds) {
+                    birds.remove(bird);
+                }
+                if (birds.isEmpty()) {
+                    newGeneration();
+                }
+            }
+
         }
 
     }
@@ -151,6 +163,7 @@ public class TrainingState extends GameState {
         }
 
         savedBirds.clear();
+        deadBirds.clear();
 
         init();
     }
@@ -179,7 +192,7 @@ public class TrainingState extends GameState {
                 return bird;
             }
         }
-        return birds.get((int) (Math.random() * savedBirds.size()));
+        return savedBirds.get(new Random().nextInt(savedBirds.size()));
 
     }
 

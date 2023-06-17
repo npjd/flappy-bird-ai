@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import Game.GamePanel;
 import Math.Matrix;
 import Math.NeuralNetwork;
 
@@ -41,7 +42,7 @@ public class Bird implements Comparable<Bird> {
         this.isThinkingBird = isThinkingBird;
 
         if (isThinkingBird) {
-            brain = new NeuralNetwork(4, 4, 2);
+            brain = new NeuralNetwork(5, 5, 2);
         } else {
             brain = null;
         }
@@ -71,7 +72,7 @@ public class Bird implements Comparable<Bird> {
             throw new RuntimeException("This bird is not a thinking bird");
         }
 
-        Pipe closestPipe = null;
+        Pipe closestPipe = pipes.get(0);
         double diff;
         double record = Double.POSITIVE_INFINITY;
         for (int i = 0; i < pipes.size(); i++) {
@@ -82,27 +83,21 @@ public class Bird implements Comparable<Bird> {
             }
         }
 
-        if (closestPipe == null) {
-            System.out.println("closest pipe is null");
-            return;
-        }
+        double[][] inputs = new double[5][1];
 
-        double[][] inputs = new double[4][1];
-
-        inputs[0][0] = closestPipe.getX() - this.x + this.image.getWidth();
-        inputs[1][0] = closestPipe.getTopHeight();
-        inputs[2][0] = closestPipe.getBottomHeight();
-        inputs[3][0] = distanceFromGround;
-
-        // inputs[0][0] = Math.random();
-        // inputs[1][0] = Math.random();
-        // inputs[2][0] = Math.random();
-        // inputs[3][0] = Math.random();
-        
+        inputs[0][0] = (closestPipe.getX() - this.x + this.image.getWidth()) / ((double) GamePanel.WIDTH);
+        inputs[1][0] = (closestPipe.getTopHeight()) / ((double) GamePanel.HEIGHT);
+        inputs[2][0] = (closestPipe.getBottomHeight()) / ((double) GamePanel.HEIGHT);
+        inputs[3][0] = this.y / ((double) GamePanel.HEIGHT);
+        inputs[4][0] = this.velocity / 10.0;
 
         Matrix inputMatrix = Matrix.fromArray(inputs);
 
+        System.out.println("input " + inputMatrix);
+
         inputMatrix.sigmoid();
+
+        System.out.println("sigmoid input " + inputMatrix);
 
         try {
             Matrix outputs = brain.feedForward(inputMatrix);
@@ -125,6 +120,7 @@ public class Bird implements Comparable<Bird> {
         return bounds;
     }
 
+
     public int compareTo(Bird otherBird) {
         if (this.fitness > otherBird.fitness) {
             return -1;
@@ -136,7 +132,7 @@ public class Bird implements Comparable<Bird> {
     }
 
     public static Bird breed(Bird bird1, Bird bird2) throws IOException {
-        Bird child = new Bird(50, 200, 52, 24, true);
+        Bird child = new Bird(GamePanel.WIDTH / 2, 200, 52, 24, true);
         child.brain = NeuralNetwork.crossOver(bird1.brain, bird2.brain);
         return child;
     }

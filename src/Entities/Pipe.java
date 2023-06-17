@@ -31,7 +31,7 @@ public class Pipe {
         this.topImage = ImageIO.read(new File("./assets/bottom_pipe.png"));
         this.bottomImage = ImageIO.read(new File("./assets/top_pipe.png"));
         this.pipeExtension = ImageIO.read(new File("./assets/pipe_extension.png"));
-        this.topBounds = new Rectangle(x, -1000, width, y + height + 1000);
+        this.topBounds = new Rectangle(x, 0, width, y + height);
         this.bottomBounds = new Rectangle(x, y + height + gap, width, GamePanel.HEIGHT - (y + gap));
         this.isPassed = false;
     }

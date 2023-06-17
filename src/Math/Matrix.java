@@ -13,12 +13,11 @@ public class Matrix {
     public void randomize() {
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.columns; j++)
-                this.matrix[i][j] = Math.random() *2 -1;
+                this.matrix[i][j] = Math.random();
         }
     }
 
-
-    public void add(Matrix m){
+    public void add(Matrix m) {
         if (this.rows == m.rows && this.columns == m.columns) {
             for (int i = 0; i < this.rows; i++) {
                 for (int j = 0; j < this.columns; j++)
@@ -80,6 +79,18 @@ public class Matrix {
         } else {
             throw new Exception("m1.rows must be equal to m2.columns");
         }
+    }
+
+    public String toString() {
+        String s = "";
+        for (int i = 0; i < this.rows; i++) {
+            s += "[";
+            for (int j = 0; j < this.columns; j++) {
+                s += this.matrix[i][j] + ", ";
+            }
+            s += "]\n";
+        }
+        return s;
     }
 
 }

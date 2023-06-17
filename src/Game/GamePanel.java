@@ -19,7 +19,7 @@ public class GamePanel extends JPanel
 	// variables for game thread
 	private Thread thread;
 	private boolean running;
-	private int FPS = 60;
+	private int FPS = 120;
 	private long targetTime = 1000 / FPS;
 	
 	// variables for drawing
