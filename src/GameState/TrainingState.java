@@ -2,12 +2,12 @@ package GameState;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-
 
 import Entities.Background;
 import Entities.Bird;
@@ -33,7 +33,6 @@ public class TrainingState extends GameState {
 
     private GamePanel gamePanel;
 
-    
     public TrainingState(GameStateManager gsm) {
 
         this.gsm = gsm;
@@ -67,6 +66,8 @@ public class TrainingState extends GameState {
             pipes.add(Pipe.generatePipe(GamePanel.WIDTH, 50, 200, 150, pipeSpeed));
 
             score = 0;
+
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -203,6 +204,9 @@ public class TrainingState extends GameState {
     }
 
     public void draw(Graphics2D g) {
+
+        g.setFont(new Font("Arial", Font.PLAIN, 12));
+
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
         background.draw(g);
@@ -225,9 +229,12 @@ public class TrainingState extends GameState {
     public void keyPressed(int k) {
         if (k == KeyEvent.VK_UP) {
             increaseFps();
-        }
-        if (k == KeyEvent.VK_DOWN) {
+        } else if (k == KeyEvent.VK_DOWN) {
             decreaseFps();
+        } else if (k == KeyEvent.VK_Q) {
+            System.out.println("quitting");
+            bestBird.brain.save("best_bird.ser");
+            gsm.setState(0);
         }
         return;
     }

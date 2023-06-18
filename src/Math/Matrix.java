@@ -1,6 +1,8 @@
 package Math;
 
-public class Matrix {
+import java.io.Serializable;
+
+public class Matrix implements Serializable {
     int rows, columns;
     public double[][] matrix;
 

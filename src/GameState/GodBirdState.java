@@ -35,7 +35,7 @@ public class GodBirdState extends GameState {
             floor = new Floor(4);
             // TODO: load best bird
             bird = new Bird(GamePanel.WIDTH / 2, 200, 52, 24, true);
-            NeuralNetwork brain = NeuralNetwork.load("./assets/bestBird.txt");
+            NeuralNetwork brain = NeuralNetwork.load("best_bird.ser");
             bird.brain = brain;
 
             pipes = new ArrayList<>();

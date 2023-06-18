@@ -53,6 +53,8 @@ public class MenuState extends GameState {
 
         g.setColor(Color.BLACK);
         g.drawString(author, 150, GamePanel.HEIGHT - 20);
+
+
     }
 
     public void keyPressed(int k) {
