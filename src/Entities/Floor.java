@@ -41,7 +41,7 @@ public class Floor {
         this.x3 = this.width * 2;
         
         // Set the bounds of the floor entity
-        this.bounds = new Rectangle(GamePanel.WIDTH, GamePanel.HEIGHT - image.getHeight(), GamePanel.WIDTH,
+        this.bounds = new Rectangle(0, GamePanel.HEIGHT - image.getHeight(), GamePanel.WIDTH,
                 GamePanel.HEIGHT);
     }
 

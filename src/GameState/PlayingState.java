@@ -85,7 +85,8 @@ public class PlayingState extends GameState {
                 pipes.remove(pipe);
             }
             // if bird collides with pipe or floor, reset
-            if (pipe.collidesWith(bird.getBounds()) || floor.collidesWith(bird.getBounds()) || bird.y < 0) {
+            if (pipe.collidesWith(bird.getBounds()) || floor.collidesWith(bird.getBounds()) || bird.y < 0
+                    || bird.y > (GamePanel.HEIGHT - floor.getHeight() - 50)) {
                 init();
             }
         }

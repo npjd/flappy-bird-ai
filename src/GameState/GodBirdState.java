@@ -103,7 +103,7 @@ public class GodBirdState extends GameState {
             }
 
             // check if god bird or player bird collides with pipe or floor
-            if (pipe.collidesWith(godBird.getBounds()) || floor.collidesWith(godBird.getBounds()) || godBird.y < 0) {
+            if (pipe.collidesWith(godBird.getBounds()) || godBird.y > (GamePanel.HEIGHT - floor.getHeight() - 50) || godBird.y < 0) {
                 init();
             }
 
