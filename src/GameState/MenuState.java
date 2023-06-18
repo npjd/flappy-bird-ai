@@ -24,7 +24,7 @@ public class MenuState extends GameState {
     }
 
     public void init() {
-        background = new Background(0);
+        background = new Background(2);
         titleFont = new Font("Arial", Font.PLAIN, 35);
         font = new Font("Arial", Font.PLAIN, 22);
     }

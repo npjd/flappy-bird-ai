@@ -67,7 +67,6 @@ public class TrainingState extends GameState {
 
             score = 0;
 
-            
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -233,6 +232,7 @@ public class TrainingState extends GameState {
             decreaseFps();
         } else if (k == KeyEvent.VK_Q) {
             System.out.println("quitting");
+            gamePanel.setFPS(60);
             bestBird.brain.save("best_bird.ser");
             gsm.setState(0);
         }

@@ -1,6 +1,7 @@
 package GameState;
 
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -17,7 +18,8 @@ public class GodBirdState extends GameState {
 
     private Background background;
     private Floor floor;
-    private Bird bird;
+    private Bird godBird;
+    private Bird playerBird;
 
     private ArrayList<Pipe> pipes;
     private int pipeSpeed = 4;
@@ -33,10 +35,10 @@ public class GodBirdState extends GameState {
         try {
             background = new Background(4);
             floor = new Floor(4);
-            // TODO: load best bird
-            bird = new Bird(GamePanel.WIDTH / 2, 200, 52, 24, true);
+            godBird = new Bird(GamePanel.WIDTH / 2, 200, 52, 24, true);
             NeuralNetwork brain = NeuralNetwork.load("best_bird.ser");
-            bird.brain = brain;
+            godBird.brain = brain;
+            playerBird = new Bird(GamePanel.WIDTH / 2, 200, 52, 24, false);
 
             pipes = new ArrayList<>();
             pipes.add(Pipe.generatePipe(GamePanel.WIDTH + 50, 50, 200, 150, pipeSpeed));
@@ -48,8 +50,9 @@ public class GodBirdState extends GameState {
     }
 
     public void update() {
-        bird.update();
-        bird.think(pipes);
+        godBird.update();
+        playerBird.update();
+        godBird.think(pipes);
         floor.update();
         background.update();
 
@@ -59,7 +62,7 @@ public class GodBirdState extends GameState {
 
             pipe.update();
 
-            if (pipe.getX() < bird.x && !pipe.isPassed()) {
+            if (pipe.getX() < godBird.x && !pipe.isPassed()) {
                 try {
                     pipe.setPassed(true);
                     pipes.add(Pipe.generatePipe(GamePanel.WIDTH + 50, 50, 200, 150, pipeSpeed));
@@ -72,9 +75,10 @@ public class GodBirdState extends GameState {
             if (pipe.isOffscreen()) {
                 pipes.remove(pipe);
             }
-            if (pipe.collidesWith(bird.getBounds()) || floor.collidesWith(bird.getBounds()) || bird.y < 0) {
+            if (pipe.collidesWith(godBird.getBounds()) || floor.collidesWith(godBird.getBounds()) || godBird.y < 0) {
                 init();
             }
+            
         }
     }
 
@@ -82,7 +86,8 @@ public class GodBirdState extends GameState {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
         background.draw(g);
-        bird.draw(g);
+        godBird.draw(g);
+        playerBird.draw(g);
         for (Pipe pipe : pipes) {
             pipe.draw(g);
         }
@@ -92,6 +97,12 @@ public class GodBirdState extends GameState {
 
     @Override
     public void keyPressed(int k) {
+        if (k == KeyEvent.VK_UP) {
+            playerBird.jump();
+        }
+        else if (k == KeyEvent.VK_Q) {
+            gsm.setState(0);
+        }
         return;
     }
 

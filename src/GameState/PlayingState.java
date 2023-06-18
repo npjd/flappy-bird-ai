@@ -89,6 +89,9 @@ public class PlayingState extends GameState {
         if (k == KeyEvent.VK_SPACE) {
             bird.jump();
         }
+        else if (k == KeyEvent.VK_Q) {
+            gsm.setState(0);
+        }
     }
 
     @Override
