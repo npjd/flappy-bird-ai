@@ -1,5 +1,11 @@
 package Math;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 public class NeuralNetwork {
 
     private Matrix inputLayer;
@@ -57,7 +63,7 @@ public class NeuralNetwork {
         this.biasO.mutate(mutationRate);
     }
 
-    public NeuralNetwork copyAndMutate( double mutationRate) {
+    public NeuralNetwork copyAndMutate(double mutationRate) {
         NeuralNetwork copy = new NeuralNetwork(this.inputLayer.rows, this.hiddenLayer.rows, this.outputLayer.rows);
 
         copy.weightsIH = this.weightsIH.copy();
@@ -71,5 +77,34 @@ public class NeuralNetwork {
         return copy;
     }
 
+    public void save(String filename) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(filename);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(this);
+            out.close();
+            fileOut.close();
+            System.out.println("Neural network saved to " + filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static NeuralNetwork load(String filename) {
+        NeuralNetwork network = null;
+        try {
+            FileInputStream fileIn = new FileInputStream(filename);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            network = (NeuralNetwork) in.readObject();
+            in.close();
+            fileIn.close();
+            System.out.println("Neural network loaded from " + filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return network;
+    }
 
 }

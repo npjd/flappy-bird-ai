@@ -12,6 +12,8 @@ public class GameStateManager {
     private int currentState;
     private GamePanel gamePanel;
 
+
+
     public GameStateManager(GamePanel gamePanel) {
         gameStates = new ArrayList<GameState>();
 
@@ -19,9 +21,11 @@ public class GameStateManager {
 
         currentState = 0;
 
-        gameStates.add(new TrainingState(this));
+        gameStates.add(new MenuState(this));
 
         gameStates.add(new PlayingState(this));
+        gameStates.add(new TrainingState(this));
+        gameStates.add(new GodBirdState(this));
 
     }
 

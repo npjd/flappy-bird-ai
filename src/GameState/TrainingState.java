@@ -32,6 +32,8 @@ public class TrainingState extends GameState {
     private int generationCount = 1;
 
     private GamePanel gamePanel;
+
+    
     public TrainingState(GameStateManager gsm) {
 
         this.gsm = gsm;
@@ -133,7 +135,7 @@ public class TrainingState extends GameState {
 
     public void increaseFps() {
         int currentFps = gamePanel.getFPS();
-        if (currentFps < 400) {
+        if (currentFps < 250) {
             gamePanel.setFPS(currentFps + 10);
         }
     }
@@ -155,8 +157,8 @@ public class TrainingState extends GameState {
 
         Bird generationBestBird = savedBirds.get(savedBirds.size() - 1);
 
-        birds.add(bestBird.copyAndMutate(0.1));
-        birds.add(generationBestBird.copyAndMutate(0.1));
+        birds.add(bestBird.copyAndMutate(0.4));
+        birds.add(generationBestBird.copyAndMutate(0.4));
 
         System.out.println(savedBirds.size());
 
