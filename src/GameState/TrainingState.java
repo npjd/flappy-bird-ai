@@ -210,7 +210,7 @@ public class TrainingState extends GameState {
         Collections.sort(savedBirds);
 
         // get best bird from last generation and best bird from this generation
-        Bird generationBestBird = savedBirds.get(savedBirds.size() - 1);
+        Bird generationBestBird = savedBirds.get(0);
 
         // add those birds to our next generation but mutated
         birds.add(bestBird.copyAndMutate(0.4));
@@ -302,6 +302,7 @@ public class TrainingState extends GameState {
 
         g.drawString("Speed (FPS): " + gamePanel.getFPS(), 10, GamePanel.HEIGHT - 40);
         g.drawString("Press up arrow to increase speed, down arrow to decrease", 10, GamePanel.HEIGHT - 30);
+        g.drawString("Press Q to go back to main menu", 10, GamePanel.HEIGHT - 60);
 
     }
 
@@ -325,7 +326,7 @@ public class TrainingState extends GameState {
             // reset frames
             gamePanel.setFPS(60);
             // saving the best bird (you can do this yourself to testyour own best bird)
-            // bestBird.brain.save("best_bird.ser");
+            bestBird.brain.save("best_bird.ser");
             gsm.setState(0);
         }
         return;

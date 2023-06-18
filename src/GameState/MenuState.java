@@ -66,6 +66,7 @@ public class MenuState extends GameState {
         // set font back to normal
         g.setFont(font);
 
+        g.drawString("Control using up or down arrows", 100, 250);
         // loop through options and draw them
         for (int i = 0; i < options.length; i++) {
             if (i == currentSelection) {
@@ -73,7 +74,7 @@ public class MenuState extends GameState {
             } else {
                 g.setColor(Color.RED);
             }
-            g.drawString(options[i], 200, 340 + i * 25);
+            g.drawString(options[i], 220, 340 + i * 25);
         }
 
         // draw author
