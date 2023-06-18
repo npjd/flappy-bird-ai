@@ -10,13 +10,19 @@ import javax.imageio.ImageIO;
 
 import Game.GamePanel;
 
+// Class for the floor entity
 public class Floor {
-    int x1, x2, x3;
-    int speed;
-    int width;
-    BufferedImage image;
-    Rectangle bounds;
+    int x1, x2, x3; // Positions of the floor tiles
+    int speed; // Speed at which the floor moves
+    int width; // Width of the floor tile
+    BufferedImage image; // Image of the floor tile
+    Rectangle bounds; // Bounds of the floor entity
 
+    /**
+     * Constructor for the Floor class
+     * 
+     * @param speed The speed at which the floor moves
+     */
     public Floor(int speed) {
         this.speed = speed;
         x1 = 0;
@@ -27,26 +33,39 @@ public class Floor {
             System.out.println("Error loading background image");
         }
 
+        // Set the width of the floor tile
         this.width = this.image.getWidth();
 
+        // Set the positions of the floor tiles
         this.x2 = this.width;
         this.x3 = this.width * 2;
-
+        
+        // Set the bounds of the floor entity
         this.bounds = new Rectangle(GamePanel.WIDTH, GamePanel.HEIGHT - image.getHeight(), GamePanel.WIDTH,
                 GamePanel.HEIGHT);
     }
 
+    /**
+     * Draws the floor tiles on the graphics object.
+     * 
+     * @param g The Graphics2D object on which to draw the floor tiles.
+     */
     public void draw(Graphics2D g) {
         g.drawImage(image, x1, GamePanel.HEIGHT - image.getHeight(), null);
         g.drawImage(image, x2, GamePanel.HEIGHT - image.getHeight(), null);
         g.drawImage(image, x3, GamePanel.HEIGHT - image.getHeight(), null);
     }
 
+    /**
+     * Updates the positions of the floor tiles based on the current speed.
+     * If a tile moves beyond the left edge of the screen, it is reset to the rightmost position.
+     */
     public void update() {
         this.x1 -= this.speed;
         this.x2 -= this.speed;
         this.x3 -= this.speed;
 
+        // Reset the positions of the floor tiles if they move beyond the left edge of the screen
         if (this.x1 <= -this.width) {
             this.x1 = this.x3 + this.width;
         }
@@ -60,22 +79,24 @@ public class Floor {
         }
     }
 
+    /**
+     * Checks if the floor collides with the given rectangle.
+     * 
+     * @param rect The rectangle to check for collision.
+     * @return True if the floor collides with the rectangle, false otherwise.
+     */
     public boolean collidesWith(Rectangle rect) {
         return rect
                 .intersects(new Rectangle(x1, GamePanel.HEIGHT - image.getHeight(), GamePanel.WIDTH, GamePanel.HEIGHT));
     }
 
+    /**
+     * Returns the height of the floor tile.
+     * 
+     * @return The height of the floor tile.
+     */
     public int getHeight() {
         return this.image.getHeight();
     }
 
-    public static int getFloorHeight() {
-        try {
-            return ImageIO.read(new File("./assets/floor.png")).getHeight();
-        } catch (IOException e) {
-            System.out.println("Error loading floor image");
-        }
-
-        return 0;
-    }
 }
