@@ -119,6 +119,10 @@ public class Bird implements Comparable<Bird> {
             throw new RuntimeException("This bird is not a thinking bird");
         }
 
+        if (pipes.size() == 0) {
+            return;
+        }
+
         // find the closest pipe
         Pipe closestPipe = pipes.get(0);
         double diff;
